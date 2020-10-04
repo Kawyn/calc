@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+        class Matrix {
+            constructor() {
+
+                this.values = []
+                this.size = { x: 0, y: 0 };
+
+                if (typeof arguments[0] == 'number') {
+
+                    this.size.x = parseInt(arguments[0]);
+                    this.size.y = parseInt(arguments[1]);
+
+                    for (let y = 0; y < this.size.y; y++) {
+
+                        this.values.push([]);
+
+                        for (let x = 0; x < this.size.x; x++) {
+
+                            this.values[y].push(0);
+                        }
+                    }
+                }
+                else {
+
+                    for (let argument of arguments) {
+
+                        this.values.push(argument);
+                    }
+
+                    this.size.x = this.values[0].length;
+                    this.size.y = this.values.length;
+                }
+            }
+
+            /***
+             * Transpose 
+             */
+            T() {
+
+                let t = [];
+
+                for (let x = 0; x < this.size.x; x++) {
+
+                    t.push([]);
+
+                    for (let y = 0; y < this.size.y; y++) {
+
+                        t[x].push(this.values[y][x]);
+                    }
+                }
+
+                [this.size.x, this.size.y] = [this.size.y, this.size.x];
+                this.values = t;
+            }
+
+            /***
+             * 
+             * 
+             */
+            Shuffle() {
+
+                for (let y = 0; y < this.size.y; y++) {
+
+                    for (let x = 0; x < this.size.x; x++) {
+
+                        this.values[y][x] = Math.random();
+                    }
+                }
+            }
+
+            Clone() {
+
+                const matrix = new Matrix(0, 0);
+
+                for (let y = 0; y < this.size.y; y++) {
+
+                    matrix.values.push([])
+                    matrix.values[y] = [...this.values[y]];
+                }
+
+                matrix.size.x = matrix.values[0].length;
+                matrix.size.y = matrix.values.length;
+                return matrix;
+            }
+
+            forEach(func) {
+                for (let y in this.values) {
+                    for (let x in this.values[0]) {
+                        this.values[y][x] = func(this.values[y][x]);
+                    }
+                }
+            }
+
+            scale(factor) {
+                for (let y in this.values) {
+                    for (let x in this.values[0]) {
+                        this.values[y][x] *= factor;
+                    }
+                }
+            }
+
+        }
+
+        // Rows of first, collumns of seconds
+        const Matrices = {
+
+            Multi(m1, m2) {
+
+                let m = new Matrix(m2.size.x, m1.size.y);
+
+                for (let y in m1.values) {
+
+                    for (let x in m2.values[0]) {
+
+                        for (let i in m1.values[0]) {
+                            m.values[y][x] += m1.values[y][i] * m2.values[i][x];
+                        }
+                    }
+                }
+
+                return m;
+            },
+
+            Sub(m1, m2) {
+
+                let m = m1.Clone();
+
+                for (let y in m.values) {
+
+                    for (let x in m.values[0]) {
+                        m.values[y][x] -= m2.values[y][x];
+                    }
+                }
+
+                return m;
+            },
+
+            Sum(m1, m2) {
+
+                let m = m1.Clone();
+
+                for (let y in m.values) {
+
+                    for (let x in m.values[0]) {
+                        m.values[y][x] += m2.values[y][x];
+                    }
+                }
+
+                return m;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <progress max="100" value="20"></progress>
+    <script>
+        var X = new Matrix(
+            [0.6, 0.1, 0.0],
+            [0.2, 0.2, 0.2],
+            [0.5, 0.3, 0.1],
+            [0.1, 0.0, 0.1],
+            [0.6, 0.1, 0.1],
+            [0.1, 0.2, 0.3],
+            [0.5, 0.0, 0.0],
+            [0.3, 0.3, 0.3],
+            [0.1, 0.1, 0.7],
+            [0.1, 0.1, 0.1]
+        );
+
+        var y = new Matrix([0.7], [0.6], [0.9], [0.2], [0.8], [0.6], [0.5], [0.9], [0.9], [0.3]);
+
+
+        function sigmoid(x) {
+            return 1 / (1 + Math.exp(-x));
+        }
+        function sigmoidDerivative(x) {
+            return x * (1 - x);
+        }
+
+
+
+
+        class NeuralNetwork {
+            constructor(X, y) {
+                this.input = X;
+
+                // amout of inputs * amout of neurons
+                this.weights1 = new Matrix(
+                    [0.54881350, 0.42365480, 0.96366276],
+                    [0.71518937, 0.64589411, 0.38344152],
+                    [0.60276338, 0.43758721, 0.79172504],
+                    [0.54488318, 0.89177300, 0.52889492]
+                );
+                this.weights1.T();
+
+
+                //this.weights1.Shuffle();
+
+                this.weights2 = new Matrix([0.56804456, 0.92559664, 0.07103606, 0.0871293]);
+                this.weights2.T();
+
+                //this.weights2.Shuffle();
+                this.y = y;
+
+            }
+
+            forward() {
+
+                this.layer1 = Matrices.Multi(this.input, this.weights1);
+                this.layer1.forEach(sigmoid);
+
+                this.layer2 = Matrices.Multi(this.layer1, this.weights2);
+                this.layer2.forEach(sigmoid);
+                /*
+
+                for (let y in this.input.values) {
+                    for (let x in this.weights1.values[0]) {
+                        this.layer1.values[y][x] = sigmoid(
+                            this.input.values[y][0] * this.weights1.values[x][0] +
+                            this.input.values[y][1] * this.weights1.values[x][1] +
+                            this.input.values[y][2] * this.weights1.values[x][2]
+                        );
+                    }
+                }
+          
+                console.log(this.layer1);
+                this.layer2 = new Matrix(1, 10)
+                for (let row in this.layer1.values) {
+
+                    for (let neuron in this.weights2.values) {
+                        this.layer2.values[row][neuron] = sigmoid(
+                            this.layer1.values[row][0] * this.weights2.values[neuron][0] +
+                            this.layer1.values[row][1] * this.weights2.values[neuron][1] +
+                            this.layer1.values[row][2] * this.weights2.values[neuron][2] +
+                            this.layer1.values[row][3] * this.weights2.values[neuron][3]
+                        );
+                    }
+                }
+                */
+                return this.layer2;
+            }
+
+            backprop() {
+
+
+                // d_weights2 = np.dot(self.layer1.T, 2 * (self.y - self.output) * sigmoid_derivative(self.output))
+                let d_weights2;
+
+                let l1 = this.layer1.Clone();
+                l1.T();
+                let e1 = Matrices.Sub(this.y, this.output);
+                e1.scale(2);
+
+                for (let i in e1.values) {
+                    e1.values[i][0] *= sigmoidDerivative(this.output.values[i][0])
+                }
+
+                d_weights2 = Matrices.Multi(l1, e1);
+
+                // Weights 1
+                let d_weights1;
+
+                let l2 = this.input.Clone();
+                l2.T();
+                let e2 = Matrices.Sub(this.y, this.output);
+                e2.scale(2);
+
+                for (let i in e2.values) {
+                    e2.values[i][0] *= sigmoidDerivative(this.output.values[i][0])
+                }
+
+                let w = this.weights2.Clone();
+                w.T();
+                let temp = Matrices.Multi(e2, w);
+
+                for (let r in temp.values) {
+                    for (let c in temp.values[0]) {
+                        temp.values[r][c] *= sigmoidDerivative(this.layer1.values[r][c])
+                    }
+                }
+                d_weights1 = Matrices.Multi(l2, temp);
+
+                this.weights1 = Matrices.Sum(this.weights1, d_weights1);
+                this.weights2 = Matrices.Sum(this.weights2, d_weights2);
+
+                /*
+                let l1 = this.layer1.Clone();
+                let l2 = this.input.Clone();
+                l1.T()
+                l2.T();
+                let d_weights2 = this.weights2.Clone();
+
+                for (let y in this.weights2.values) {
+
+
+                    for (let x in this.weights2.values[y]) {
+
+                        let dot = 0;
+                        for (let i in l1.values[x]) {
+                            dot += l1.values[x][i] * (this.y.values[i][0] - this.output.values[i][0]) * sigmoidDerivative(this.output.values[i][0]);
+                        }
+
+                        dot *= 2;
+
+                        d_weights2.values[y][x] = dot;
+
+                    }
+                }
+
+                let temp = new Matrix(4, 10);
+
+                for (let y in temp.values) {
+
+                    let n = 2 * (this.y.values[y][0] - this.output.values[y][0]) * sigmoidDerivative(this.output.values[y][0]);
+
+                    for (let x in temp.values[y]) {
+                        temp.values[y][x] = n * this.weights2.values[0][x] * sigmoidDerivative(this.layer1.values[y][x]);
+                    }
+                }
+
+                temp.T();
+
+                console.log(temp);
+                let d_weights1 = this.weights1.Clone();
+                d_weights1.T();
+                for (let y in d_weights1.values) {
+
+                    for (let x in d_weights1.values[y]) {
+
+                        let dot = 0;
+
+                        for (let i in l2.values[y]) {
+                            dot += l2.values[y][i] * temp.values[x][i];
+                        }
+                        console.log(dot);
+                        d_weights1.values[y][x] = dot;
+                    }
+                }
+
+                console.log(d_weights1);*/
+            }
+
+            train() {
+                this.output = this.forward();
+                this.backprop();
+            }
+
+            think(input) {
+                this.input = input;
+                let out = this.forward();
+                console.log(out.values[0][0]);
+            }
+        }
+
+
+        let b = new NeuralNetwork(X, y);
+
+
+        for (let i = 0; i < 100000; i++) {
+            if (i % 10000 == 0)
+                console.log('git');
+            b.train(X, y)
+        }
+    </script>
+</body>
+
+</html>

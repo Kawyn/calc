@@ -1,0 +1,194 @@
+@font-face {
+    font-family: "Calc";
+    src: url("./fonts/calc.ttf");
+    src: url("./fonts/calc.ttf") format("truetype");
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+
+    color: #e4dccf;
+    background-color: seashell;
+}
+
+* {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+body > div:first-child {
+    position: absolute;
+
+    width: 475px;
+    height: 650px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+    border-radius: 5%;
+    padding-bottom: 1.5%;
+
+    background-color: #b5afa4;
+}
+
+body > div > div {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 5%;
+
+    background-color: #e4dccf;
+}
+
+.button {
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 22%;
+    height: 12%;
+    border-radius: 15px;
+    background-color: #191a1b;
+    /* #932424; */
+    cursor: pointer;
+}
+
+.button:hover > div {
+    top: -10%;
+}
+
+.button > div {
+    position: absolute;
+    top: -15%;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+
+    background-color: #45494c;
+    /* #c62e2e;*/
+    transition: top 0.15s;
+    color: #e4dccf;
+
+    font-size: 50px;
+    text-align: center;
+}
+
+.button > div > span {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+#display {
+    position: absolute;
+    width: 90%;
+    height: 27%;
+
+    left: 50%;
+    top: 3.5%;
+
+    border-radius: 20px;
+    transform: translate(-50%);
+    background-color: #45494c;
+}
+
+#display > div {
+    position: absolute;
+    width: 90%;
+    top: 50%;
+    height: 70%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+
+    background-color: #8a9986;
+}
+
+#display > div > div {
+    position: absolute;
+    width: 100%;
+    top: 5%;
+    height: 100%;
+    border-radius: 10px;
+
+    background-color: #a6b8a2;
+}
+
+#display > div > div > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: #a1b39e;
+    font-size: 100px;
+    padding: 0px;
+    font-family: "Calc";
+    border: none;
+}
+
+#display > div > div > div > div {
+    position: absolute;
+    margin: 0px;
+    border: none;
+
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: right;
+    color: #3d3d3d;
+    font-size: 100px;
+    font-family: "Calc";
+}
+
+.speech-bubble {
+    position: absolute;
+    background: #a1b39e;
+    width: 20%;
+    height: 20%;
+    left: 12%;
+    top: 20%;
+    border-radius: 15px;
+}
+
+.speech-bubble:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    width: 0;
+    height: 0;
+    border: 69px solid transparent;
+    border-left-color: #a1b39e;
+    border-right: 0;
+    border-top: 0;
+    margin-top: -34.5px;
+    margin-right: -69px;
+}
+
+.speech-bubble > span {
+    color: #45494c;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 90%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    text-align: center;
+}
+
+#credits {
+    position: absolute;
+    color: #b5afa4;
+    font-style: italic;
+    width: 100%;
+    bottom: 2%;
+    text-align: center;
+}

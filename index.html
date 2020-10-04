@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[nazwa]</title>
+    <link rel="stylesheet" href="main.css" />
+    <script>
+        class Matrix {
+            constructor() {
+
+                this.values = []
+                this.size = { x: 0, y: 0 };
+
+                if (typeof arguments[0] == 'number') {
+
+                    this.size.x = parseInt(arguments[0]);
+                    this.size.y = parseInt(arguments[1]);
+
+                    for (let y = 0; y < this.size.y; y++) {
+
+                        this.values.push([]);
+
+                        for (let x = 0; x < this.size.x; x++) {
+
+                            this.values[y].push(0);
+                        }
+                    }
+                }
+                else {
+
+                    for (let argument of arguments) {
+
+                        this.values.push(argument);
+                    }
+
+                    this.size.x = this.values[0].length;
+                    this.size.y = this.values.length;
+                }
+            }
+
+            /***
+             * Transpose 
+             */
+            T() {
+
+                let t = [];
+
+                for (let x = 0; x < this.size.x; x++) {
+
+                    t.push([]);
+
+                    for (let y = 0; y < this.size.y; y++) {
+
+                        t[x].push(this.values[y][x]);
+                    }
+                }
+
+                [this.size.x, this.size.y] = [this.size.y, this.size.x];
+                this.values = t;
+            }
+
+            /***
+             * 
+             * 
+             */
+            shuffle() {
+
+                for (let y = 0; y < this.size.y; y++) {
+
+                    for (let x = 0; x < this.size.x; x++) {
+
+                        this.values[y][x] = Math.random();
+                    }
+                }
+            }
+
+            Clone() {
+
+                const matrix = new Matrix(0, 0);
+
+                for (let y = 0; y < this.size.y; y++) {
+
+                    matrix.values.push([])
+                    matrix.values[y] = [...this.values[y]];
+                }
+
+                matrix.size.x = matrix.values[0].length;
+                matrix.size.y = matrix.values.length;
+                return matrix;
+            }
+
+            forEach(func) {
+                for (let y in this.values) {
+                    for (let x in this.values[0]) {
+                        this.values[y][x] = func(this.values[y][x]);
+                    }
+                }
+            }
+
+            scale(factor) {
+                for (let y in this.values) {
+                    for (let x in this.values[0]) {
+                        this.values[y][x] *= factor;
+                    }
+                }
+            }
+
+            push(array) {
+                this.values.push(array);
+                this.size.y++;
+            }
+
+        }
+
+        // Rows of first, collumns of seconds
+        const Matrices = {
+
+            Multi(m1, m2) {
+
+                let m = new Matrix(m2.size.x, m1.size.y);
+
+                for (let y in m1.values) {
+
+                    for (let x in m2.values[0]) {
+
+                        for (let i in m1.values[0]) {
+                            m.values[y][x] += m1.values[y][i] * m2.values[i][x];
+                        }
+                    }
+                }
+
+                return m;
+            },
+
+            Sub(m1, m2) {
+
+                let m = m1.Clone();
+
+                for (let y in m.values) {
+
+                    for (let x in m.values[0]) {
+                        m.values[y][x] -= m2.values[y][x];
+                    }
+                }
+
+                return m;
+            },
+
+            Sum(m1, m2) {
+
+                let m = m1.Clone();
+
+                for (let y in m.values) {
+
+                    for (let x in m.values[0]) {
+                        m.values[y][x] += m2.values[y][x];
+                    }
+                }
+
+                return m;
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div>
+        <div>
+            <div id="display">
+                <div>
+                    <div>
+                        <div>
+                            88888<div id="face" style="text-align: right;">0u0&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button" style="left: 3%; top: 35%" onmouseup="press(7)">
+                <div><span>7</span></div>
+            </div>
+            <div class="button" style="left: 27%; top: 35%" onmouseup="press(8)">
+                <div><span>8</span></div>
+            </div>
+            <div class="button" style="left: 51%; top: 35%" onmouseup="press(9)">
+                <div><span>9</span></div>
+            </div>
+            <div class="button" style="left: 75%; top: 35%; background-color: #463a87;"
+                onmouseup="window.location.reload(false)">
+                <div style="background-color: #8a7bd9;"><span>CE</span></div>
+            </div>
+            <!-- SECOND -->
+            <div class="button" style="left: 3%; top: 50%" onmouseup="press(4)">
+                <div><span>4</span></div>
+            </div>
+            <div class="button" style="left: 27%; top: 50%" onmouseup="press(5)">
+                <div><span>5</span></div>
+            </div>
+            <div class="button" style="left: 51%; top: 50%" onmouseup="press(6)">
+                <div><span>6</span></div>
+            </div>
+            <div class="button" style="left: 75%; top: 50%; background-color: #1a7672;"
+                onmouseup="face.textContent = ''">
+                <div style="background-color: #24a19c;"><span>C</span></div>
+            </div>
+
+
+            <!-- THIRD -->
+            <div class="button" style="left: 3%; top: 65%" onmouseup="press(1)">
+                <div><span>1</span></div>
+            </div>
+            <div class="button" style="left: 27%; top: 65%" onmouseup="press(2)">
+                <div><span>2</span></div>
+            </div>
+            <div class="button" style="left: 51%; top: 65%" onmouseup="press(3)">
+                <div><span>3</span></div>
+            </div>
+            <div class="button" style="left: 75%; top: 65%; background-color: #aa7017;"
+                onmouseup="alert('do zrobienia na potem')">
+                <div style="background-color: #e2bc1c;"><span style="font-style: italic">i</span></div>
+            </div>
+
+            <div class="button" style="left: 3%; top: 80%" onmouseup="press(0)">
+                <div><span>0</span></div>
+            </div>
+            <div class="button" style="left: 27%; top: 80%; width: 46%; background-color: #b64900;"
+                onmouseup="press(-1)">
+                <div style="background-color: #ec6c16;"><span>=</span></div>
+            </div>
+            <div class="button" style="left: 75%; top: 80%; background-color: #b64900;" onmouseup=" 
+                for (let i = 0; i < 10000; i++) {
+                    nn.train()
+                }">
+                <div style="background-color: #ec6c16;"><span>T</span></div>
+            </div>
+        </div>
+    </div>
+    <div id="credits"> [nazwa] by Kawyn <br />
+        01.10.2020 - 04.10.2020</div>
+    <script>
+        const face = document.getElementById('face');
+
+        let length = 2;
+        let inputs = [];
+        let output = undefined;
+
+        function press(i) {
+
+            if (output == undefined) {
+                if (inputs.length < length) {
+
+                    if (i === -1)
+                        return;
+
+                    inputs.push(i / 100);
+                    face.textContent = i;
+                }
+                if (inputs.length == length) {
+
+                    let matrix = new Matrix(inputs);
+                    output = nn.think(matrix);
+                    output = Math.round(output * 100)
+
+                    setTimeout(() => {
+                        face.textContent = output;
+                    }, 500);
+                }
+            }
+            else {
+
+                if (i !== -1) {
+                    if (face.textContent == output) {
+                        face.textContent = i;
+                    }
+                    else {
+                        if (face.textContent.length < 2) {
+                            face.textContent += i;
+                        }
+                    }
+                    return;
+                }
+                X.push(inputs);
+                inputs = [];
+
+                y.push([parseFloat(face.textContent) / 100]);
+                output = undefined;
+                face.textContent = ''
+
+                let factor = X.size.y < 25 ? X.size.y : 25;
+                for (let i = 0; i < 100 * factor; i++) {
+                    nn.train()
+                }
+            }
+        }
+
+
+        var X = new Matrix(2, 0);
+        var y = new Matrix(1, 0);
+
+
+        function sigmoid(x) {
+            return 1 / (1 + Math.exp(-x));
+        }
+        function sigmoidDerivative(x) {
+            return x * (1 - x);
+        }
+
+
+
+
+        class NeuralNetwork {
+            constructor(X, y) {
+
+                this.input = X;
+                this.y = y;
+
+
+                this.weights1 = new Matrix(4, 2);
+                this.weights1.shuffle();
+
+                this.weights2 = new Matrix(1, 4);
+                this.weights2.shuffle();
+            }
+
+            forward() {
+
+                this.layer1 = Matrices.Multi(this.input, this.weights1);
+                this.layer1.forEach(sigmoid);
+
+                this.layer2 = Matrices.Multi(this.layer1, this.weights2);
+                this.layer2.forEach(sigmoid);
+
+                return this.layer2;
+            }
+
+            backprop() {
+
+
+                let d_weights2;
+
+                let l1 = this.layer1.Clone();
+                l1.T();
+                let e1 = Matrices.Sub(this.y, this.output);
+                e1.scale(2);
+
+                for (let i in e1.values) {
+                    e1.values[i][0] *= sigmoidDerivative(this.output.values[i][0])
+                }
+                d_weights2 = Matrices.Multi(l1, e1);
+
+                // Weights 1
+                let d_weights1;
+
+                let l2 = this.input.Clone();
+                l2.T();
+                let e2 = Matrices.Sub(this.y, this.output);
+                e2.scale(2);
+
+                for (let i in e2.values) {
+                    e2.values[i][0] *= sigmoidDerivative(this.output.values[i][0])
+                }
+
+                let w = this.weights2.Clone();
+                w.T();
+                let temp = Matrices.Multi(e2, w);
+
+                for (let r in temp.values) {
+                    for (let c in temp.values[0]) {
+                        temp.values[r][c] *= sigmoidDerivative(this.layer1.values[r][c])
+                    }
+                }
+                d_weights1 = Matrices.Multi(l2, temp);
+
+                this.weights1 = Matrices.Sum(this.weights1, d_weights1);
+                this.weights2 = Matrices.Sum(this.weights2, d_weights2);
+
+
+            }
+
+            train() {
+                this.input = X;
+                this.y = y;
+                this.output = this.forward();
+                this.backprop();
+            }
+
+            think(input) {
+                this.input = input;
+                let out = this.forward();
+                return out.values[0][0];
+            }
+        }
+
+
+        let nn = new NeuralNetwork(X, y);
+    </script>
+</body>
+
+</html>
